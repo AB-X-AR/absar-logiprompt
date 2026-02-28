@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Klavera — Learn Piano & Classical Music</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ─── RESET & ROOT ─────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:    #F5A623;
+  --amber:   #FF6B35;
+  --rose:    #E8375A;
+  --violet:  #7B2FBE;
+  --indigo:  #3D2C8D;
+  --teal:    #00C9A7;
+  --cream:   #FFF9F0;
+  --ink:     #0D0A1E;
+  --ink2:    #1A1535;
+  --muted:   #6B648A;
+  --serif:   'Playfair Display', Georgia, serif;
+  --sans:    'DM Sans', sans-serif;
+  --mono:    'DM Mono', monospace;
+  --r:       16px;
+  --ease:    cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--ink);color:var(--cream);overflow-x:hidden;line-height:1.6}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+button{cursor:pointer;font-family:var(--sans);border:none;outline:none}
+
+/* ─── SCROLLBAR ────────────────────────────────── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--ink2)}
+::-webkit-scrollbar-thumb{background:var(--violet);border-radius:3px}
+
+/* ─── NOISE TEXTURE OVERLAY ────────────────────── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.4;
+}
+
+/* ─── CONTAINER ────────────────────────────────── */
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+
+/* ─── BUTTONS ──────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:50px;font-weight:600;font-size:.92rem;transition:all .3s var(--ease)}
+.btn-glow{background:linear-gradient(135deg,var(--amber),var(--rose));color:#fff;box-shadow:0 0 24px rgba(255,107,53,.4)}
+.btn-glow:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(255,107,53,.6)}
+.btn-ghost{background:rgba(255,255,255,.08);color:var(--cream);border:1.5px solid rgba(255,255,255,.15);backdrop-filter:blur(8px)}
+.btn-ghost:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+.btn-teal{background:linear-gradient(135deg,var(--teal),#00A896);color:var(--ink);font-weight:700}
+.btn-teal:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,201,167,.4)}
+
+/* ─── NAV ──────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;padding:20px 0;transition:all .4s var(--ease)}
+nav.scrolled{background:rgba(13,10,30,.92);backdrop-filter:blur(20px);padding:14px 0;box-shadow:0 4px 32px rgba(0,0,0,.4)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo-icon{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,var(--amber),var(--rose));
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem
+}
+.nav-logo-text{font-family:var(--serif);font-size:1.5rem;font-weight:900;letter-spacing:-0.5px}
+.nav-logo-text span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:.88rem;font-weight:500;color:rgba(255,255,255,.7);transition:color .2s;letter-spacing:.3px}
+.nav-links a:hover{color:#fff}
+.nav-cta{display:flex;align-items:center;gap:12px}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:pointer}
+.hamburger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:.3s}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;flex-direction:column;gap:0;background:var(--ink2);border-top:1px solid rgba(255,255,255,.08)}
+.mobile-menu a{padding:16px 32px;font-weight:500;color:rgba(255,255,255,.8);border-bottom:1px solid rgba(255,255,255,.06);transition:color .2s,background .2s}
+.mobile-menu a:hover{color:#fff;background:rgba(255,255,255,.04)}
+.mobile-menu.open{display:flex}
+
+/* ─── HERO ─────────────────────────────────────── */
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;position:relative;overflow:hidden}
+
+/* Gradient mesh background */
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.6}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,var(--violet),transparent);top:-100px;right:-100px;animation:drift1 12s ease-in-out infinite}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,var(--rose),transparent);bottom:-150px;left:-100px;animation:drift2 15s ease-in-out infinite}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,var(--amber),transparent);top:50%;left:40%;animation:drift3 10s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,40px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,20px)}}
+
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1;padding:60px 0}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);
+  color:var(--gold);padding:6px 16px;border-radius:50px;
+  font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:24px
+}
+.hero-tag::before{content:'♪';font-size:1rem}
+
+.hero-title{
+  font-family:var(--serif);
+  font-size:clamp(2.8rem,5.5vw,4.8rem);
+  line-height:1.05;font-weight:900;
+  letter-spacing:-2px;margin-bottom:24px
+}
+.hero-title .line2{
+  background:linear-gradient(90deg,var(--amber),var(--rose),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block
+}
+.hero-title .line3{color:var(--teal);display:block;font-style:italic}
+
+.hero-desc{color:rgba(255,255,255,.6);font-size:1.05rem;line-height:1.75;margin-bottom:36px;max-width:460px}
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+
+.hero-social-proof{display:flex;align-items:center;gap:16px}
+.avatars{display:flex}
+.avatars .av{
+  width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);
+  background:linear-gradient(135deg,var(--violet),var(--rose));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:700;margin-left:-10px;
+  color:#fff
+}
+.avatars .av:first-child{margin-left:0}
+.proof-text{font-size:.82rem;color:rgba(255,255,255,.6)}
+.proof-text strong{color:#fff;font-weight:600}
+.proof-stars{color:var(--gold);font-size:.82rem;margin-bottom:2px}
+
+/* Piano visual */
+.hero-visual{position:relative}
+.piano-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:28px;padding:40px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+  position:relative;overflow:hidden
+}
+.piano-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(123,47,190,.15),transparent);
+  pointer-events:none
+}
+.piano-label{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:20px
+}
+.piano-keys{display:flex;gap:4px;margin-bottom:28px;align-items:flex-end}
+.wk{
+  width:36px;height:130px;border-radius:0 0 8px 8px;
+  background:linear-gradient(180deg,#fff 0%,#f0e8ff 100%);
+  position:relative;transition:all .15s;cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+  border-bottom:3px solid rgba(0,0,0,.1)
+}
+.wk:hover,.wk.active{background:linear-gradient(180deg,var(--gold),var(--amber));transform:translateY(3px);box-shadow:0 2px 8px rgba(245,166,35,.6)}
+.bk{
+  width:26px;height:82px;border-radius:0 0 6px 6px;
+  background:linear-gradient(180deg,#1a0a2e,#0d0a1e);
+  position:absolute;top:0;z-index:2;margin-left:-13px;
+  transition:all .15s;cursor:pointer;
+  box-shadow:2px 4px 12px rgba(0,0,0,.5)
+}
+.bk:hover,.bk.active{background:linear-gradient(180deg,var(--rose),#a01e3c);transform:translateY(3px);box-shadow:0 2px 12px rgba(232,55,90,.6)}
+.piano-keys-wrapper{position:relative;display:flex;gap:0}
+.key-group{display:flex;position:relative}
+
+.progress-section{margin-top:28px}
+.prog-label{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:8px}
+.prog-bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--violet));animation:fillbar 2s ease forwards;transform-origin:left}
+@keyframes fillbar{from{width:0}to{width:var(--w)}}
+
+.lesson-chips{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.chip{
+  padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:600;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.7);cursor:pointer;transition:all .2s
+}
+.chip:hover,.chip.active{background:rgba(123,47,190,.3);border-color:var(--violet);color:#fff}
+.chip.done{background:rgba(0,201,167,.15);border-color:var(--teal);color:var(--teal)}
+
+.float-badge{
+  position:absolute;background:var(--ink2);border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r);padding:12px 18px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);font-size:.82rem;font-weight:600;
+  animation:floatbadge 4s ease-in-out infinite
+}
+@keyframes floatbadge{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.badge1{top:-30px;right:-20px;animation-delay:0s}
+.badge2{bottom:-20px;left:-30px;animation-delay:-2s}
+.badge-icon{font-size:1.5rem}
+.badge-sub{font-size:.68rem;color:var(--muted);font-weight:400}
+
+/* ─── MARQUEE STRIP ─────────────────────────────── */
+.marquee-strip{
+  background:linear-gradient(90deg,var(--amber),var(--rose),var(--violet),var(--teal),var(--amber));
+  background-size:300% 100%;
+  padding:14px 0;overflow:hidden;position:relative;z-index:1;
+  animation:shiftgrad 6s linear infinite
+}
+@keyframes shiftgrad{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+.marquee-inner{display:flex;gap:0;white-space:nowrap;animation:scroll 20s linear infinite}
+.marquee-inner:hover{animation-play-state:paused}
+.marquee-item{
+  display:inline-flex;align-items:center;gap:10px;padding:0 32px;
+  font-family:var(--serif);font-size:1rem;font-weight:700;
+  color:rgba(255,255,255,.9);letter-spacing:.5px
+}
+.marquee-item::before{content:'♩';opacity:.6}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── STATS ─────────────────────────────────────── */
+#stats{padding:80px 0;position:relative}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.stat-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  padding:40px 32px;text-align:center;
+  transition:background .3s;position:relative;overflow:hidden
+}
+.stat-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--amber),var(--rose));
+  transform:scaleX(0);transition:transform .3s;transform-origin:left
+}
+.stat-card:hover{background:rgba(255,255,255,.06)}
+.stat-card:hover::after{transform:scaleX(1)}
+.stat-num{font-family:var(--serif);font-size:3rem;font-weight:900;line-height:1;margin-bottom:8px}
+.stat-num.gold{color:var(--gold)}
+.stat-num.rose{color:var(--rose)}
+.stat-num.teal{color:var(--teal)}
+.stat-num.violet{color:#a855f7}
+.stat-label{color:rgba(255,255,255,.5);font-size:.85rem;font-weight:500;letter-spacing:.5px}
+
+/* ─── COURSES ───────────────────────────────────── */
+#courses{padding:96px 0}
+.section-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--teal);margin-bottom:16px
+}
+.section-eyebrow::before{content:'';width:24px;height:2px;background:var(--teal);border-radius:1px}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:900;letter-spacing:-1px;margin-bottom:16px}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-sub{color:rgba(255,255,255,.5);font-size:1rem;max-width:520px;line-height:1.7}
+
+.courses-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:gap}
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+.course-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s,border-color .3s;
+  cursor:pointer
+}
+.course-card:hover{transform:translateY(-10px);box-shadow:0 24px 60px rgba(0,0,0,.5);border-color:rgba(255,255,255,.15)}
+.course-thumb{
+  aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+  font-size:4rem;position:relative;overflow:hidden
+}
+.course-thumb::after{
+  content:'▶';position:absolute;
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;color:#fff;
+  opacity:0;transition:opacity .3s
+}
+.course-card:hover .course-thumb::after{opacity:1}
+.ct1{background:linear-gradient(135deg,#1a0540,#3d2c8d)}
+.ct2{background:linear-gradient(135deg,#1a0820,#7b2fbe)}
+.ct3{background:linear-gradient(135deg,#0d2b1a,#00c9a7)}
+.ct4{background:linear-gradient(135deg,#2b0a0a,#e8375a)}
+.ct5{background:linear-gradient(135deg,#1a1000,#f5a623)}
+.ct6{background:linear-gradient(135deg,#0a0a2b,#2563eb)}
+
+.course-body{padding:24px}
+.course-level{
+  font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:12px
+}
+.lv-beginner{background:rgba(0,201,167,.15);color:var(--teal)}
+.lv-intermediate{background:rgba(245,166,35,.15);color:var(--gold)}
+.lv-advanced{background:rgba(232,55,90,.15);color:var(--rose)}
+
+.course-title{font-family:var(--serif);font-size:1.15rem;font-weight:700;margin-bottom:8px;line-height:1.3}
+.course-desc{font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:16px}
+.course-meta{display:flex;align-items:center;justify-content:space-between}
+.course-info{display:flex;gap:12px}
+.course-info span{font-size:.75rem;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:4px}
+.course-price{font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--gold)}
+.course-price .old{font-size:.75rem;color:rgba(255,255,255,.3);text-decoration:line-through;font-family:var(--sans);font-weight:400}
+
+/* ─── HOW IT WORKS ──────────────────────────────── */
+#how{padding:96px 0;background:linear-gradient(180deg,var(--ink) 0%,var(--ink2) 50%,var(--ink) 100%)}
+.how-inner{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{
+  display:flex;gap:24px;padding:28px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:all .3s;cursor:pointer;position:relative
+}
+.step:last-child{border-bottom:none}
+.step::before{
+  content:'';position:absolute;left:-32px;top:50%;transform:translateY(-50%);
+  width:3px;height:0;background:linear-gradient(180deg,var(--amber),var(--rose));
+  border-radius:2px;transition:height .4s;
+}
+.step:hover::before,.step.active::before{height:100%}
+.step-num{
+  width:52px;height:52px;border-radius:16px;flex-shrink:0;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:1.2rem;font-weight:900;color:rgba(255,255,255,.3);
+  transition:all .3s
+}
+.step:hover .step-num,.step.active .step-num{background:linear-gradient(135deg,var(--amber),var(--rose));border-color:transparent;color:#fff;box-shadow:0 8px 24px rgba(255,107,53,.4)}
+.step-content h3{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.step-content p{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.65}
+
+/* Animated screen */
+.screen-wrap{position:relative}
+.screen{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);
+  border-radius:24px;padding:32px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.5)
+}
+.screen-header{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.screen-dot{width:12px;height:12px;border-radius:50%}
+.screen-dot.r{background:#ff5f57}
+.screen-dot.y{background:#febc2e}
+.screen-dot.g{background:#28c840}
+.screen-title{font-family:var(--mono);font-size:.75rem;color:rgba(255,255,255,.3);margin-left:auto}
+
+.waveform{display:flex;align-items:center;gap:3px;height:64px;margin-bottom:24px}
+.wbar{
+  flex:1;background:linear-gradient(180deg,var(--violet),var(--rose));
+  border-radius:2px;animation:wave .8s ease-in-out infinite alternate
+}
+@keyframes wave{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+.wbar:nth-child(1){animation-delay:.0s;--h:40%}
+.wbar:nth-child(2){animation-delay:.1s}
+.wbar:nth-child(3){animation-delay:.2s}
+.wbar:nth-child(4){animation-delay:.3s}
+.wbar:nth-child(5){animation-delay:.4s}
+.wbar:nth-child(6){animation-delay:.5s}
+.wbar:nth-child(7){animation-delay:.6s}
+.wbar:nth-child(8){animation-delay:.7s}
+.wbar:nth-child(9){animation-delay:.8s}
+.wbar:nth-child(10){animation-delay:.9s}
+.wbar:nth-child(11){animation-delay:.05s}
+.wbar:nth-child(12){animation-delay:.15s}
+.wbar:nth-child(13){animation-delay:.25s}
+.wbar:nth-child(14){animation-delay:.35s}
+.wbar:nth-child(15){animation-delay:.45s}
+.wbar:nth-child(even){background:linear-gradient(180deg,var(--teal),var(--violet))}
+
+.screen-lesson{margin-bottom:20px}
+.sl-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sl-name{font-family:var(--serif);font-size:1rem;font-weight:700}
+.sl-badge{font-size:.7rem;padding:3px 10px;border-radius:20px;background:rgba(0,201,167,.15);color:var(--teal);font-weight:600}
+.sl-prog{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.sl-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--teal),var(--violet));width:72%;transition:width .5s}
+
+.mini-keys{display:flex;gap:2px;margin-top:20px}
+.mk-w{width:20px;height:60px;background:rgba(255,255,255,.9);border-radius:0 0 4px 4px;cursor:pointer;transition:all .1s}
+.mk-w:hover,.mk-w.lit{background:var(--gold);box-shadow:0 0 12px rgba(245,166,35,.6)}
+.mk-b{width:14px;height:38px;background:#1a0a2e;border-radius:0 0 3px 3px;margin-left:-7px;margin-right:-7px;z-index:2;position:relative;cursor:pointer;transition:all .1s}
+.mk-b:hover,.mk-b.lit{background:var(--rose);box-shadow:0 0 12px rgba(232,55,90,.5)}
+.mini-keys-row{display:flex;position:relative;justify-content:center}
+
+/* ─── INSTRUCTORS ───────────────────────────────── */
+#instructors{padding:96px 0}
+.instructors-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.inst-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:24px;padding:32px 24px;text-align:center;
+  transition:all .3s var(--ease)
+}
+.inst-card:hover{background:rgba(255,255,255,.07);transform:translateY(-6px);border-color:rgba(255,255,255,.15)}
+.inst-avatar{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;font-weight:800;color:#fff;
+  position:relative
+}
+.inst-avatar::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:linear-gradient(135deg,var(--amber),var(--rose),var(--violet));
+  z-index:-1
+}
+.av-a{background:linear-gradient(135deg,#3d2c8d,#7b2fbe)}
+.av-b{background:linear-gradient(135deg,#7b2fbe,#e8375a)}
+.av-c{background:linear-gradient(135deg,#0d2b1a,#00c9a7)}
+.av-d{background:linear-gradient(135deg,#2b0a0a,#f5a623)}
+.inst-name{font-family:var(--serif);font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.inst-title{font-size:.78rem;color:var(--teal);font-weight:600;letter-spacing:.5px;margin-bottom:10px}
+.inst-bio{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:16px}
+.inst-stars{color:var(--gold);font-size:.82rem;letter-spacing:1px}
+.inst-students{font-size:.72rem;color:rgba(255,255,255,.35);margin-top:4px}
+
+/* ─── TESTIMONIALS ──────────────────────────────── */
+#testimonials{padding:96px 0;background:var(--ink2);position:relative;overflow:hidden}
+#testimonials::before{
+  content:'♫';font-family:var(--serif);
+  font-size:320px;position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  color:rgba(255,255,255,.02);pointer-events:none;line-height:1
+}
+.testi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:48px}
+.testi-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:32px;transition:all .3s
+}
+.testi-card:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);transform:translateY(-4px)}
+.testi-card.featured{
+  background:linear-gradient(145deg,rgba(123,47,190,.2),rgba(232,55,90,.15));
+  border-color:rgba(123,47,190,.3);
+  grid-column:span 2
+}
+.testi-quote-mark{font-family:var(--serif);font-size:3.5rem;color:var(--gold);line-height:.8;margin-bottom:16px;opacity:.8}
+.testi-text{font-size:.92rem;color:rgba(255,255,255,.75);line-height:1.72;margin-bottom:24px}
+.testi-card.featured .testi-text{font-size:1.05rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-av{
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--violet),var(--rose));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff
+}
+.testi-name{font-weight:600;font-size:.88rem}
+.testi-role{font-size:.75rem;color:rgba(255,255,255,.4);margin-top:1px}
+.testi-stars{color:var(--gold);font-size:.75rem;margin-top:3px}
+
+/* ─── PRICING ───────────────────────────────────── */
+#pricing{padding:96px 0}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.price-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;padding:40px;position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s
+}
+.price-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.price-card.popular{
+  background:linear-gradient(145deg,rgba(123,47,190,.15),rgba(61,44,141,.1));
+  border-color:rgba(123,47,190,.4)
+}
+.popular-badge{
+  position:absolute;top:20px;right:20px;
+  background:linear-gradient(135deg,var(--amber),var(--rose));
+  color:#fff;font-size:.7rem;font-weight:700;padding:4px 12px;
+  border-radius:20px;letter-spacing:.5px;text-transform:uppercase
+}
+.price-tier{font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.price-amount{font-family:var(--serif);font-size:3.5rem;font-weight:900;line-height:1;margin-bottom:6px}
+.price-amount span{font-size:1.3rem;vertical-align:top;margin-top:10px;display:inline-block;font-family:var(--sans);font-weight:400;color:rgba(255,255,255,.5)}
+.price-period{font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:28px}
+.price-features{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.pf{display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(255,255,255,.7)}
+.pf::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0}
+.pf.no{color:rgba(255,255,255,.3)}
+.pf.no::before{content:'✗';color:rgba(255,255,255,.2)}
+
+/* ─── CTA BANNER ────────────────────────────────── */
+#cta-banner{padding:96px 0}
+.cta-inner{
+  background:linear-gradient(135deg,var(--indigo),var(--violet),#9b2fbe);
+  border-radius:32px;padding:80px;position:relative;overflow:hidden;text-align:center
+}
+.cta-inner::before{
+  content:'🎹';font-size:300px;position:absolute;
+  right:-60px;bottom:-60px;opacity:.07;pointer-events:none;line-height:1
+}
+.cta-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);font-weight:900;margin-bottom:16px;letter-spacing:-1px}
+.cta-desc{color:rgba(255,255,255,.7);font-size:1.05rem;max-width:520px;margin:0 auto 36px;line-height:1.7}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* ─── FOOTER ────────────────────────────────────── */
+footer{background:var(--darker, #05020f);padding:72px 0 32px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand .logo-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.footer-brand .flogo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--amber),var(--rose));display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.footer-brand .flogo-text{font-family:var(--serif);font-size:1.3rem;font-weight:900}
+.footer-brand .flogo-text span{color:var(--gold)}
+.footer-brand p{font-size:.85rem;color:rgba(255,255,255,.4);line-height:1.7;max-width:280px;margin-bottom:24px}
+.footer-social{display:flex;gap:10px}
+.fs{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .2s;color:rgba(255,255,255,.6)}
+.fs:hover{background:rgba(123,47,190,.3);border-color:var(--violet);color:#fff;transform:translateY(-2px)}
+.footer-col h4{font-family:var(--serif);font-size:.95rem;font-weight:700;margin-bottom:20px;color:#fff}
+.footer-col ul{display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{font-size:.83rem;color:rgba(255,255,255,.4);transition:color .2s}
+.footer-col ul li a:hover{color:var(--gold)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;border-top:1px solid rgba(255,255,255,.06);font-size:.8rem;color:rgba(255,255,255,.3)}
+.footer-bottom .heart{color:var(--rose)}
+
+/* ─── RESPONSIVE ────────────────────────────────── */
+@media(max-width:1024px){
+  .courses-grid{grid-template-columns:repeat(2,1fr)}
+  .instructors-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .hero-inner{grid-template-columns:1fr;gap:48px;padding:40px 0}
+  .hero-visual{order:-1}
+  .piano-card{padding:24px}
+  .how-inner{grid-template-columns:1fr;gap:48px}
+  .courses-grid,.testi-grid,.pricing-grid{grid-template-columns:1fr}
+  .testi-card.featured{grid-column:span 1}
+  .instructors-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
+  .cta-inner{padding:48px 28px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .wrap{padding:0 20px}
+  .hero-cta-row{flex-direction:column}
+  .hero-cta-row .btn{width:100%;justify-content:center}
+  .float-badge{display:none}
+  .cta-btns{flex-direction:column;align-items:center}
+}
+
+/* ─── REVEAL ANIMATIONS ─────────────────────────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Klavera Home">
+        <div class="nav-logo-icon">🎹</div>
+        <div class="nav-logo-text">Klave<span>ra</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#courses">Courses</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#instructors">Instructors</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#courses" class="btn btn-ghost" style="padding:10px 20px;font-size:.85rem">Browse Courses</a>
+        <a href="#pricing" class="btn btn-glow" style="padding:10px 22px;font-size:.85rem">Start Free Trial</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a href="#courses">Courses</a>
+      <a href="#how">How It Works</a>
+      <a href="#instructors">Instructors</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#pricing" style="color:var(--gold);font-weight:700">Start Free Trial →</a>
+    </nav>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hero-bg-orb orb1"></div>
+    <div class="hero-bg-orb orb2"></div>
+    <div class="hero-bg-orb orb3"></div>
+  </div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-tag">Piano & Classical Music</div>
+        <h1 class="hero-title">
+          Master the<br>
+          <span class="line2">Art of Piano</span>
+          <span class="line3">from Anywhere.</span>
+        </h1>
+        <p class="hero-desc">From your first note to Chopin nocturnes — Klavera's AI-powered lessons adapt to your pace, style, and musical goals. Learn piano the way it was meant to be taught.</p>
+        <div class="hero-cta-row">
+          <a href="#pricing" class="btn btn-glow">🎹 Start Free — 14 Days</a>
+          <a href="#courses" class="btn btn-ghost">Watch a Lesson ▶</a>
+        </div>
+        <div class="hero-social-proof">
+          <div class="avatars">
+            <div class="av">A</div>
+            <div class="av" style="background:linear-gradient(135deg,var(--teal),var(--indigo))">M</div>
+            <div class="av" style="background:linear-gradient(135deg,var(--rose),var(--amber))">S</div>
+            <div class="av" style="background:linear-gradient(135deg,var(--gold),var(--amber))">R</div>
+          </div>
+          <div>
+            <div class="proof-stars">★★★★★</div>
+            <div class="proof-text"><strong>42,000+</strong> students learning piano today</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="float-badge badge1">
+          <span class="badge-icon">🏆</span>
+          <div>
+            <div>#1 Piano App 2024</div>
+            <div class="badge-sub">App Store Award</div>
+          </div>
+        </div>
+        <div class="piano-card">
+          <div class="piano-label">♩ Today's Lesson — Moonlight Sonata</div>
+
+          <div class="piano-keys-wrapper">
+            <div class="piano-keys">
+              <div class="wk" onclick="this.classList.toggle('active')" title="C4"></div>
+              <div class="wk" onclick="this.classList.toggle('active')" title="D4"></div>
+              <div class="wk" onclick="this.classList.toggle('active')" title="E4"></div>
+              <div class="wk active" onclick="this.classList.toggle('active')" title="F4"></div>
+              <div class="wk" onclick="this.classList.toggle('active')" title="G4"></div>
+              <div class="wk active" onclick="this.classList.toggle('active')" title="A4"></div>
+              <div class="wk" onclick="this.classList.toggle('active')" title="B4"></div>
+              <div class="wk" onclick="this.classList.toggle('active')" title="C5"></div>
+            </div>
+          </div>
+
+          <div class="progress-section">
+            <div class="prog-label"><span>Lesson Progress</span><span style="color:var(--teal);font-weight:600">72%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="--w:72%"></div></div>
+          </div>
+          <div class="lesson-chips">
+            <span class="chip done">♩ Intro</span>
+            <span class="chip done">♪ Left Hand</span>
+            <span class="chip active">♫ Right Hand</span>
+            <span class="chip">♬ Full Piece</span>
+          </div>
+        </div>
+        <div class="float-badge badge2">
+          <span class="badge-icon">🎵</span>
+          <div>
+            <div>Streak: 14 Days 🔥</div>
+            <div class="badge-sub">Keep it up, Absar!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-inner">
+    <span class="marquee-item">Beginner to Advanced</span>
+    <span class="marquee-item">Bach & Beethoven</span>
+    <span class="marquee-item">Chopin Nocturnes</span>
+    <span class="marquee-item">Music Theory</span>
+    <span class="marquee-item">AI Feedback</span>
+    <span class="marquee-item">Live Masterclasses</span>
+    <span class="marquee-item">Sheet Music Library</span>
+    <span class="marquee-item">Practice Streaks</span>
+    <span class="marquee-item">Beginner to Advanced</span>
+    <span class="marquee-item">Bach & Beethoven</span>
+    <span class="marquee-item">Chopin Nocturnes</span>
+    <span class="marquee-item">Music Theory</span>
+    <span class="marquee-item">AI Feedback</span>
+    <span class="marquee-item">Live Masterclasses</span>
+    <span class="marquee-item">Sheet Music Library</span>
+    <span class="marquee-item">Practice Streaks</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="stat-num gold">42K+</div>
+        <div class="stat-label">Active Students</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-num rose">320+</div>
+        <div class="stat-label">Video Lessons</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-num teal">98%</div>
+        <div class="stat-label">Satisfaction Rate</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-num violet">50+</div>
+        <div class="stat-label">Expert Instructors</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses">
+  <div class="wrap">
+    <div class="courses-header">
+      <div>
+        <div class="section-eyebrow">Curriculum</div>
+        <h2 class="section-title">Learn at Your <em>Own Pace</em></h2>
+        <p class="section-sub">Structured paths from absolute beginner to concert-level playing, with over 320 lessons across classical repertoire.</p>
+      </div>
+      <a href="#pricing" class="btn btn-ghost" style="flex-shrink:0">View All Courses →</a>
+    </div>
+    <div class="courses-grid">
+      <article class="course-card reveal">
+        <div class="course-thumb ct1"><span>🎼</span></div>
+        <div class="course-body">
+          <span class="course-level lv-beginner">Beginner</span>
+          <h3 class="course-title">Piano Foundations: Zero to First Song</h3>
+          <p class="course-desc">Learn posture, finger placement, basic scales, and play your first melody in just 2 weeks.</p>
+          <div class="course-meta">
+            <div class="course-info">
+              <span>⏱ 12 hrs</span>
+              <span>📹 28 lessons</span>
+            </div>
+            <div class="course-price"><span class="old">₹1,999</span> ₹799</div>
+          </div>
+        </div>
+      </article>
+      <article class="course-card reveal reveal-delay-1">
+        <div class="course-thumb ct2"><span>🌙</span></div>
+        <div class="course-body">
+          <span class="course-level lv-intermediate">Intermediate</span>
+          <h3 class="course-title">Chopin: Nocturnes & Ballades</h3>
+          <p class="course-desc">Dive deep into the emotional world of Chopin. Learn 4 iconic nocturnes with technique breakdowns.</p>
+          <div class="course-meta">
+            <div class="course-info">
+              <span>⏱ 24 hrs</span>
+              <span>📹 52 lessons</span>
+            </div>
+            <div class="course-price"><span class="old">₹3,999</span> ₹1,499</div>
+          </div>
+        </div>
+      </article>
+      <article class="course-card reveal reveal-delay-2">
+        <div class="course-thumb ct3"><span>🎵</span></div>
+        <div class="course-body">
+          <span class="course-level lv-beginner">Beginner</span>
+          <h3 class="course-title">Music Theory for Pianists</h3>
+          <p class="course-desc">Understand chords, scales, harmony, and notation. The theory every classical pianist must know.</p>
+          <div class="course-meta">
+            <div class="course-info">
+              <span>⏱ 16 hrs</span>
+              <span>📹 36 lessons</span>
+            </div>
+            <div class="course-price"><span class="old">₹2,499</span> ₹999</div>
+          </div>
+        </div>
+      </article>
+      <article class="course-card reveal">
+        <div class="course-thumb ct4"><span>🎹</span></div>
+        <div class="course-body">
+          <span class="course-level lv-advanced">Advanced</span>
+          <h3 class="course-title">Beethoven Sonatas Masterclass</h3>
+          <p class="course-desc">Tackle Beethoven's most celebrated sonatas. Deep analysis, fingering, and emotional expression.</p>
+          <div class="course-meta">
+            <div class="course-info">
+              <span>⏱ 32 hrs</span>
+              <span>📹 64 lessons</span>
+            </div>
+            <div class="course-price"><span class="old">₹5,999</span> ₹2,499</div>
+          </div>
+        </div>
+      </article>
+      <article class="course-card reveal reveal-delay-1">
+        <div class="course-thumb ct5"><span>🎶</span></div>
+        <div class="course-body">
+          <span class="course-level lv-intermediate">Intermediate</span>
+          <h3 class="course-title">Bach Inventions & Fugues</h3>
+          <p class="course-desc">Master counterpoint and independent hand coordination with Bach's greatest keyboard works.</p>
+          <div class="course-meta">
+            <div class="course-info">
+              <span>⏱ 20 hrs</span>
+              <span>📹 44 lessons</span>
+            </div>
+            <div class="course-price"><span class="old">₹3,499</span> ₹1,299</div>
+          </div>
+        </div>
+      </article>
+      <article class="course-card reveal reveal-delay-2">
+        <div class="course-thumb ct6"><span>🌟</span></div>
+        <div class="course-body">
+          <span class="course-level lv-advanced">Advanced</span>
+          <h3 class="course-title">Classical Improvisation & Composition</h3>
+          <p class="course-desc">Go beyond repertoire — learn to improvise in classical styles and compose your own piano pieces.</p>
+          <div class="course-meta">
+            <div class="course-info">
+              <span>⏱ 28 hrs</span>
+              <span>📹 56 lessons</span>
+            </div>
+            <div class="course-price"><span class="old">₹4,999</span> ₹1,999</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+    <div class="how-inner">
+      <div>
+        <div class="section-eyebrow">Process</div>
+        <h2 class="section-title">How Klavera <em>Works</em></h2>
+        <p class="section-sub" style="margin-bottom:40px">Our AI-adaptive platform learns how you learn and adjusts every lesson to your skill level and pace.</p>
+        <div class="steps">
+          <div class="step active" onclick="activateStep(this)">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3>Take a Skill Assessment</h3>
+              <p>A 5-minute interactive test identifies your current level, learning style, and musical goals.</p>
+            </div>
+          </div>
+          <div class="step" onclick="activateStep(this)">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3>Get Your Custom Learning Path</h3>
+              <p>Our AI builds a personalised curriculum — choosing the right pieces, exercises, and theory for you.</p>
+            </div>
+          </div>
+          <div class="step" onclick="activateStep(this)">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h3>Practice with Real-Time Feedback</h3>
+              <p>Play along and receive instant feedback on timing, dynamics, and fingering via your microphone.</p>
+            </div>
+          </div>
+          <div class="step" onclick="activateStep(this)">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <h3>Join Live Masterclasses</h3>
+              <p>Weekly live sessions with world-class instructors. Ask questions, get performance feedback, grow fast.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen">
+          <div class="screen-header">
+            <div class="screen-dot r"></div>
+            <div class="screen-dot y"></div>
+            <div class="screen-dot g"></div>
+            <div class="screen-title">Klavera Studio</div>
+          </div>
+          <div class="waveform" aria-hidden="true">
+            <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+          </div>
+          <div class="screen-lesson">
+            <div class="sl-top">
+              <div class="sl-name">Moonlight Sonata — Op. 27</div>
+              <div class="sl-badge">🔴 Recording</div>
+            </div>
+            <div class="sl-prog"><div class="sl-fill"></div></div>
+          </div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:12px;font-family:var(--mono)">► Play along — AI listening...</div>
+          <div class="mini-keys-row">
+            <div class="mini-keys">
+              <div class="mk-w" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-b" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-w lit" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-b" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-w" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-w" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-b lit" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-w" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-b" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-w lit" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-b" onclick="this.classList.toggle('lit')"></div>
+              <div class="mk-w" onclick="this.classList.toggle('lit')"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:20px">
+            <div style="flex:1;background:rgba(0,201,167,.1);border:1px solid rgba(0,201,167,.2);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--teal)">94%</div>
+              <div style="font-size:.68rem;color:rgba(255,255,255,.4);margin-top:2px">Accuracy</div>
+            </div>
+            <div style="flex:1;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--gold)">♩=72</div>
+              <div style="font-size:.68rem;color:rgba(255,255,255,.4);margin-top:2px">Tempo</div>
+            </div>
+            <div style="flex:1;background:rgba(232,55,90,.1);border:1px solid rgba(232,55,90,.2);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--rose)">A+</div>
+              <div style="font-size:.68rem;color:rgba(255,255,255,.4);margin-top:2px">Grade</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTORS -->
+<section id="instructors">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:0">
+      <div class="section-eyebrow" style="justify-content:center">Faculty</div>
+      <h2 class="section-title">World-Class <em>Instructors</em></h2>
+      <p class="section-sub" style="margin:0 auto">Learn from conservatory-trained pianists and educators with decades of performance and teaching experience.</p>
+    </div>
+    <div class="instructors-grid">
+      <div class="inst-card reveal">
+        <div class="inst-avatar av-a">A</div>
+        <div class="inst-name">Dr. Amara Osei</div>
+        <div class="inst-title">Classical Piano & Theory</div>
+        <div class="inst-bio">Juilliard alumna, Carnegie Hall performer. Specialises in Romantic era repertoire and expressive interpretation.</div>
+        <div class="inst-stars">★★★★★</div>
+        <div class="inst-students">12,400 students</div>
+      </div>
+      <div class="inst-card reveal reveal-delay-1">
+        <div class="inst-avatar av-b">M</div>
+        <div class="inst-name">Marco Bellini</div>
+        <div class="inst-title">Baroque & Bach Specialist</div>
+        <div class="inst-bio">Former principal pianist at La Scala. 20+ years teaching Bach, Handel, and counterpoint to all levels.</div>
+        <div class="inst-stars">★★★★★</div>
+        <div class="inst-students">8,750 students</div>
+      </div>
+      <div class="inst-card reveal reveal-delay-2">
+        <div class="inst-avatar av-c">S</div>
+        <div class="inst-name">Soo-Jin Park</div>
+        <div class="inst-title">Contemporary Classical</div>
+        <div class="inst-bio">Seoul Philharmonic soloist. Bridges classical technique with modern musical sensibility and expression.</div>
+        <div class="inst-stars">★★★★★</div>
+        <div class="inst-students">10,200 students</div>
+      </div>
+      <div class="inst-card reveal reveal-delay-3">
+        <div class="inst-avatar av-d">R</div>
+        <div class="inst-name">Rafael Montoya</div>
+        <div class="inst-title">Beginner Specialist & Pedagogy</div>
+        <div class="inst-bio">20,000+ beginners taught worldwide. Known for patient, encouraging teaching and breakthrough results.</div>
+        <div class="inst-stars">★★★★★</div>
+        <div class="inst-students">20,600 students</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="wrap">
+    <div style="text-align:center">
+      <div class="section-eyebrow" style="justify-content:center">Reviews</div>
+      <h2 class="section-title">Students <em>Love</em> Klavera</h2>
+      <p class="section-sub" style="margin:0 auto">Over 42,000 students have transformed their musical journey with our platform.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card featured reveal">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-text">I tried 4 other piano apps before Klavera and none of them came close. The AI feedback is genuinely incredible — it caught my timing issues better than any human teacher I've had. I went from knowing nothing to playing Clair de Lune in 8 months. This platform is life-changing.</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,var(--violet),var(--rose))">N</div>
+          <div>
+            <div class="testi-name">Neha Krishnamurthy</div>
+            <div class="testi-role">Software Engineer → Pianist</div>
+            <div class="testi-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-text">The structured curriculum is brilliant. I know exactly what to practice and why. My son (age 9) is learning Beethoven in 6 months.</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,var(--teal),var(--indigo))">T</div>
+          <div>
+            <div class="testi-name">Thomas Andersson</div>
+            <div class="testi-role">Parent & Student</div>
+            <div class="testi-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-text">Live masterclasses with Dr. Amara changed everything for me. Real feedback, real improvement, real passion.</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,var(--amber),var(--rose))">P</div>
+          <div>
+            <div class="testi-name">Priyesh Nair</div>
+            <div class="testi-role">Medical Student, Kerala</div>
+            <div class="testi-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-text">I'm 62 years old and always dreamed of playing piano. Klavera made it possible. The patience and clarity of instruction is extraordinary.</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,var(--gold),var(--amber))">G</div>
+          <div>
+            <div class="testi-name">Grace Okonkwo</div>
+            <div class="testi-role">Retired Teacher, Lagos</div>
+            <div class="testi-stars">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div style="text-align:center">
+      <div class="section-eyebrow" style="justify-content:center">Plans</div>
+      <h2 class="section-title">Simple, <em>Honest</em> Pricing</h2>
+      <p class="section-sub" style="margin:0 auto">Start free for 14 days. No credit card needed. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">₹<span style="font-size:3rem;color:inherit;font-family:var(--serif)">0</span></div>
+        <div class="price-period">Forever free</div>
+        <div class="price-features">
+          <div class="pf">5 lessons per month</div>
+          <div class="pf">Basic music theory</div>
+          <div class="pf">Community forum access</div>
+          <div class="pf no">AI feedback</div>
+          <div class="pf no">Live masterclasses</div>
+          <div class="pf no">Sheet music library</div>
+        </div>
+        <a href="#" class="btn btn-ghost" style="width:100%;justify-content:center">Get Started Free</a>
+      </div>
+      <div class="price-card popular reveal reveal-delay-1">
+        <div class="popular-badge">Most Popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount"><span>₹</span>799</div>
+        <div class="price-period">per month · billed monthly</div>
+        <div class="price-features">
+          <div class="pf">Unlimited lessons</div>
+          <div class="pf">Full course library (320+)</div>
+          <div class="pf">AI real-time feedback</div>
+          <div class="pf">2 live masterclasses/month</div>
+          <div class="pf">Sheet music library</div>
+          <div class="pf no">1-on-1 instructor sessions</div>
+        </div>
+        <a href="#" class="btn btn-glow" style="width:100%;justify-content:center">Start 14-Day Free Trial</a>
+      </div>
+      <div class="price-card reveal reveal-delay-2">
+        <div class="price-tier">Master</div>
+        <div class="price-amount"><span>₹</span>1,999</div>
+        <div class="price-period">per month · billed monthly</div>
+        <div class="price-features">
+          <div class="pf">Everything in Pro</div>
+          <div class="pf">Unlimited masterclasses</div>
+          <div class="pf">4 x 1-on-1 sessions/month</div>
+          <div class="pf">Personalised practice plan</div>
+          <div class="pf">Performance certificate</div>
+          <div class="pf">Priority support</div>
+        </div>
+        <a href="#" class="btn btn-teal" style="width:100%;justify-content:center">Start 14-Day Free Trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section id="cta-banner">
+  <div class="wrap">
+    <div class="cta-inner">
+      <h2 class="cta-title">Your Musical Journey<br>Starts Today</h2>
+      <p class="cta-desc">Join 42,000+ students who discovered the joy of playing piano. No experience needed. Just passion.</p>
+      <div class="cta-btns">
+        <a href="#pricing" class="btn btn-glow" style="font-size:1rem;padding:16px 36px">🎹 Start Free — 14 Days</a>
+        <a href="#courses" class="btn btn-ghost" style="font-size:1rem;padding:16px 36px">Browse All Courses</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-row">
+          <div class="flogo-icon">🎹</div>
+          <div class="flogo-text">Klave<span>ra</span></div>
+        </div>
+        <p>The world's most loved piano learning platform. From first note to concert stage — we're with you every step.</p>
+        <div class="footer-social">
+          <a href="#" class="fs" aria-label="Instagram">📷</a>
+          <a href="#" class="fs" aria-label="YouTube">▶</a>
+          <a href="#" class="fs" aria-label="Twitter">𝕏</a>
+          <a href="#" class="fs" aria-label="TikTok">♪</a>
+        </div>
+      </div>
+      <nav class="footer-col" aria-label="Learn">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="#courses">All Courses</a></li>
+          <li><a href="#courses">Beginner Path</a></li>
+          <li><a href="#courses">Classical Repertoire</a></li>
+          <li><a href="#courses">Music Theory</a></li>
+          <li><a href="#courses">Live Masterclasses</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Company">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#instructors">Instructors</a></li>
+          <li><a href="#">About Klavera</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Support">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Klavera. All rights reserved. | Designed by <span style="color:var(--gold);font-weight:600">Absar</span> for LogiPrompt</p>
+      <p>Made with <span class="heart">♥</span> for music lovers everywhere</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// NAV scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), {passive:true});
+
+// Hamburger
+const ham = document.getElementById('hamburger');
+const mob = document.getElementById('mobileMenu');
+ham.addEventListener('click', () => {
+  const open = mob.classList.toggle('open');
+  ham.classList.toggle('active', open);
+  ham.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+mob.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mob.classList.remove('open');
+  ham.classList.remove('active');
+  document.body.style.overflow = '';
+}));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (!t) return;
+    e.preventDefault();
+    t.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+// Step activation
+function activateStep(el) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Piano key animation — auto highlight keys
+const wkeys = document.querySelectorAll('.wk');
+let ki = 0;
+function animKeys() {
+  wkeys.forEach(k => k.classList.remove('active'));
+  wkeys[ki].classList.add('active');
+  ki = (ki + 1) % wkeys.length;
+}
+setInterval(animKeys, 600);
+
+// Mini key sparkle
+const mkw = document.querySelectorAll('.mk-w, .mk-b');
+function sparkleKeys() {
+  mkw.forEach(k => k.classList.remove('lit'));
+  const picks = [0,2,4,6,9,11];
+  picks.forEach(i => { if (mkw[i]) mkw[i].classList.add('lit'); });
+  setTimeout(() => {
+    mkw.forEach(k => k.classList.remove('lit'));
+    const picks2 = [1,3,5,8,10];
+    picks2.forEach(i => { if (mkw[i]) mkw[i].classList.add('lit'); });
+  }, 800);
+}
+setInterval(sparkleKeys, 2000);
+
+// Dynamic year
+document.querySelectorAll('#year').forEach(el => el.textContent = new Date().getFullYear());
+</script>
+</body>
+</html>
